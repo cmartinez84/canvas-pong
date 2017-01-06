@@ -1,4 +1,4 @@
-// var paddles = [];
+var paddles = [];
 var score;
 
 var myArea = {
@@ -38,21 +38,31 @@ function Component (width, height, x, y, type){
   this.update = function(){
     ctx = myArea.context;
     ctx.fillStyle = "white";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    if(this.type === "hPaddle"){
+      ctx.fillRect(myArea.x, this.y, this.width, this.height);
+    }
+    if(this.type === "vPaddle"){
+      ctx.fillRect(this.x, myArea.y, this.width, this.height);
+    }
   }
 
 }
 
   function updateMyArea(){
     myArea.clear();
-    if(myArea.x && myArea.y){
-      myPaddle.x = myArea.x;
-      myPaddle.y = myArea.y;
-      console.log(myPaddle.x);
-    }
-    myPaddle.update();
+    // if(myArea.x && myArea.y){
+      // myPaddle.x = myArea.x;
+      // myPaddle.y = myArea.y;
+    // }
+    paddles.forEach(function(paddle){
+      paddle.update();
+    })
 
   }
 myArea.start();
 
-var myPaddle = new Component(120, 10, 100, 100, "thing" );
+paddles.push(new Component(120, 10, 10, 780, "hPaddle"));
+paddles.push(new Component(120, 10, 20, 10, "hPaddle"));
+paddles.push(new Component(10, 120, 10, 10, "vPaddle"));
+paddles.push(new Component(10, 120, 780, 10, "vPaddle"));
+// var
