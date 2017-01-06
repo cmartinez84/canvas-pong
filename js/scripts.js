@@ -39,13 +39,16 @@ function Component (width, height, x, y, type){
     ctx = myArea.context;
     ctx.fillStyle = "white";
     if(this.type === "hPaddle"){
+      if(myArea.x >650){myArea.x = 650}
+      if(myArea.x <30){myArea.x = 30}
       ctx.fillRect(myArea.x, this.y, this.width, this.height);
     }
     if(this.type === "vPaddle"){
+      if(myArea.y > 650){myArea.y = 650}
+      if(myArea.y < 30) {myArea.y = 30}
       ctx.fillRect(this.x, myArea.y, this.width, this.height);
     }
   }
-
 }
 
   function updateMyArea(){
