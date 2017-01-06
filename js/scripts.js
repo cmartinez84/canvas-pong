@@ -1,4 +1,4 @@
-var paddles = [];
+// var paddles = [];
 var score;
 
 var myArea = {
@@ -17,4 +17,33 @@ var myArea = {
     clearInterval(this.interval);
   }
 }
+
+function Component (width, height, x, y, type){
+  this.width = width;
+  this.height = height;
+  this.x = x;
+  this.y = y;
+  this.type = type;
+  this.speedX = 0;
+  this.speedY = 0;
+  ctx = myArea.context;
+  ctx.fillStyle = "white";
+  ctx.fillRect(this.x, this.y, this.width, this.height);
+  this.update = function(){
+    ctx = myArea.context;
+    ctx.fillStyle = "white";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+}
+
+  function updateMyArea(){
+    console.log("update");
+    myArea.clear();
+    myPaddle.update();
+
+    var x, y;
+  }
 myArea.start();
+
+var myPaddle = new Component(30, 30, 100, 100, "thing" );
