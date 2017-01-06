@@ -9,6 +9,11 @@ var myArea = {
     this.context = this.canvas.getContext('2d');
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.interval = setInterval(updateMyArea, 20);
+    this.canvas.style.cursor = "none";
+    window.addEventListener('mousemove', function(e){
+      myArea.x = e.clientX - (myArea.canvas.offsetLeft - window.pageXOffset);
+      myArea.y = e.clientY -(myArea.canvas.offsetTop - window.pageYOffset);
+    });
   },
   clear : function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -16,6 +21,7 @@ var myArea = {
   stop : function(){
     clearInterval(this.interval);
   }
+
 }
 
 function Component (width, height, x, y, type){
@@ -38,12 +44,15 @@ function Component (width, height, x, y, type){
 }
 
   function updateMyArea(){
-    console.log("update");
     myArea.clear();
+    if(myArea.x && myArea.y){
+      myPaddle.x = myArea.x;
+      myPaddle.y = myArea.y;
+      console.log(myPaddle.x);
+    }
     myPaddle.update();
 
-    var x, y;
   }
 myArea.start();
 
-var myPaddle = new Component(30, 30, 100, 100, "thing" );
+var myPaddle = new Component(120, 10, 100, 100, "thing" );
