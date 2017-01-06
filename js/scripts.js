@@ -1,5 +1,6 @@
 var paddles = [];
 var score;
+var ball;
 
 var myArea = {
   canvas : document.createElement("canvas"),
@@ -30,8 +31,8 @@ function Component (width, height, x, y, type){
   this.x = x;
   this.y = y;
   this.type = type;
-  this.speedX = 0;
-  this.speedY = 0;
+  this.speedX = 1;
+  this.speedY = 1;
   ctx = myArea.context;
   ctx.fillStyle = "white";
   ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -48,24 +49,26 @@ function Component (width, height, x, y, type){
       if(myArea.y < 30) {myArea.y = 30}
       ctx.fillRect(this.x, myArea.y, this.width, this.height);
     }
+    if(this.type === "ball"){
+      this.x += this.speedX;
+      this.y += this.speedY;
+      ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
   }
 }
 
-  function updateMyArea(){
-    myArea.clear();
-    // if(myArea.x && myArea.y){
-      // myPaddle.x = myArea.x;
-      // myPaddle.y = myArea.y;
-    // }
-    paddles.forEach(function(paddle){
-      paddle.update();
-    })
+function updateMyArea(){
+  myArea.clear();
+  paddles.forEach(function(paddle){
+    paddle.update();
+    ball.update();
+  })
+}
 
-  }
+
 myArea.start();
-
+ball = new Component(10, 10, 50, 50, "ball");
 paddles.push(new Component(120, 10, 10, 780, "hPaddle"));
 paddles.push(new Component(120, 10, 20, 10, "hPaddle"));
 paddles.push(new Component(10, 120, 10, 10, "vPaddle"));
 paddles.push(new Component(10, 120, 780, 10, "vPaddle"));
-// var
