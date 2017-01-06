@@ -25,12 +25,14 @@ var myArea = {
 
 }
 
-function Component (width, height, x, y, type){
+function Component (width, height, x, y, type, position){
+
   this.width = width;
   this.height = height;
   this.x = x;
   this.y = y;
   this.type = type;
+  this.position = position;
   this.speedX = 1;
   this.speedY = 1;
   ctx = myArea.context;
@@ -42,33 +44,72 @@ function Component (width, height, x, y, type){
     if(this.type === "hPaddle"){
       if(myArea.x >650){myArea.x = 650}
       if(myArea.x <30){myArea.x = 30}
-      ctx.fillRect(myArea.x, this.y, this.width, this.height);
+      this.x = myArea.x;
     }
     if(this.type === "vPaddle"){
       if(myArea.y > 650){myArea.y = 650}
       if(myArea.y < 30) {myArea.y = 30}
-      ctx.fillRect(this.x, myArea.y, this.width, this.height);
+      this.y = myArea.y;
     }
     if(this.type === "ball"){
       this.x += this.speedX;
       this.y += this.speedY;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+  },
+  this.crashWith = function(otherObj){
+    var myLeft = this.x;
+    var myRight = this.x + this.width;
+    var myTop = this.y;
+    var myBottom = this.y + this.height;
+    var otherLeft = otherObj.x;
+    var otherRight = otherObj.x + otherObj.width;
+    var otherTop = otherObj.y;
+    var otherBottom = otherObj.y + otherObj.height;
+    var position = otherObj.position;
+    if(otherObj.type == "hPaddle"){
+      if(myLeft < otherRight && myRight > otherLeft){
+        if(position === "bottom" && myBottom  > otherTop){
+          this.speedY *= -1;
+        }
+        if(position === "top" && myTop < otherBottom){
+          this.speedY *= -1;
+        }
+      }
+    }
+    if(otherObj.type == "vPaddle"){
+      if(myTop < otherBottom & myBottom > otherTop){
+        if(position === "right" && myRight  > otherLeft){
+          this.speedX *= -1;
+        }
+        if(position === "left" && myLeft < otherRight){
+          this.speedX *= -1;
+        }
+      }
+    }
+
+
+  //
+  //   if(this.x > 780 || this.x < 10){this.speedX = -(this.speedX)}
+  //   if(this.y > 780 || this.y <10){this.speedY = -(this.speedY)}
   }
+
 }
 
 function updateMyArea(){
   myArea.clear();
   paddles.forEach(function(paddle){
     paddle.update();
+    ball.crashWith(paddle);
     ball.update();
   })
 }
 
 
 myArea.start();
-ball = new Component(10, 10, 50, 50, "ball");
-paddles.push(new Component(120, 10, 10, 780, "hPaddle"));
-paddles.push(new Component(120, 10, 20, 10, "hPaddle"));
-paddles.push(new Component(10, 120, 10, 10, "vPaddle"));
-paddles.push(new Component(10, 120, 780, 10, "vPaddle"));
+ball = new Component(10, 10, 150, 10, "ball");
+paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
+paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
+paddles.push(new Component(10, 120, 10, 10, "vPaddle", "left"));
+paddles.push(new Component(10, 120, 780, 10, "vPaddle", "right"));
