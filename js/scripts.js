@@ -1,6 +1,7 @@
 var paddles = [];
 var score;
 var ball;
+var ping;
 
 var myArea = {
   canvas : document.createElement("canvas"),
@@ -15,6 +16,8 @@ var myArea = {
       myArea.x = e.clientX - (myArea.canvas.offsetLeft - window.pageXOffset);
       myArea.y = e.clientY -(myArea.canvas.offsetTop - window.pageYOffset);
     });
+    mySound = new Audio("sounds/ping.wav");
+
   },
   clear : function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -22,8 +25,10 @@ var myArea = {
   stop : function(){
     clearInterval(this.interval);
   }
-
 }
+
+
+
 
 function Component (width, height, x, y, type, position){
 
@@ -34,7 +39,7 @@ function Component (width, height, x, y, type, position){
   this.type = type;
   this.position = position;
   this.speedX = 1;
-  this.speedY = 1;
+  this.speedY = 2;
   ctx = myArea.context;
   ctx.fillStyle = "white";
   ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -71,9 +76,11 @@ function Component (width, height, x, y, type, position){
     if(otherObj.type == "hPaddle"){
       if(myLeft < otherRight && myRight > otherLeft){
         if(position === "bottom" && myBottom  > otherTop){
+          mySound.play();
           this.speedY *= -1;
         }
         if(position === "top" && myTop < otherBottom){
+          mySound.play();
           this.speedY *= -1;
         }
       }
@@ -81,20 +88,20 @@ function Component (width, height, x, y, type, position){
     if(otherObj.type == "vPaddle"){
       if(myTop < otherBottom & myBottom > otherTop){
         if(position === "right" && myRight  > otherLeft){
+               mySound.play();
           this.speedX *= -1;
         }
         if(position === "left" && myLeft < otherRight){
+          mySound.play();
           this.speedX *= -1;
         }
       }
     }
-
-
-  //
-  //   if(this.x > 780 || this.x < 10){this.speedX = -(this.speedX)}
-  //   if(this.y > 780 || this.y <10){this.speedY = -(this.speedY)}
+  },
+  this.outOfBounds = function(){
+      if(this.x > 800 || this.x < 0){console.log("boo");}
+      if(this.y > 800 || this.y < 0){console.log("boo");};
   }
-
 }
 
 function updateMyArea(){
@@ -102,13 +109,15 @@ function updateMyArea(){
   paddles.forEach(function(paddle){
     paddle.update();
     ball.crashWith(paddle);
+    ball.outOfBounds();
     ball.update();
   })
 }
 
 
 myArea.start();
-ball = new Component(10, 10, 150, 10, "ball");
+ball = new Component(10, 10, 300, 10, "ball");
+
 paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
 paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
 paddles.push(new Component(10, 120, 10, 10, "vPaddle", "left"));
