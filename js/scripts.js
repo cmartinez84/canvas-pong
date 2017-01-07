@@ -3,6 +3,8 @@ var score;
 var ball;
 var ping;
 
+
+
 var myArea = {
   canvas : document.createElement("canvas"),
   start : function(){
@@ -99,8 +101,12 @@ function Component (width, height, x, y, type, position){
     }
   },
   this.outOfBounds = function(){
-      if(this.x > 800 || this.x < 0){console.log("boo");}
-      if(this.y > 800 || this.y < 0){console.log("boo");};
+      if(this.x > 800 || this.x < 0  || this.y > 800 || this.y < 0){
+        myArea.stop();
+          ctx.fillStyle = "white";
+          ctx.font = "50px Arial"
+          ctx.fillText(" G A M E O V E R", 200, 400);
+      }
   }
 }
 

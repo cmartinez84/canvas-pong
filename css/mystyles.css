@@ -1,7 +1,12 @@
 canvas{
   border: 1px  solid #d3d3d3;
   background-color: black;
+
 }
 body{
   text-align: center;
+}
+.customFont{
+  font-family: 'Press Start 2P', cursive;
+
 }
