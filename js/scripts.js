@@ -26,7 +26,14 @@ var myArea = {
       myArea.x = e.clientX - (myArea.canvas.offsetLeft - window.pageXOffset);
       myArea.y = e.clientY -(myArea.canvas.offsetTop - window.pageYOffset);
     });
+    paddles = [];
     mySound = new Audio("sounds/ping.wav");
+    ball = new Component(10, 10, 300, 10, "ball", null);
+    boardScore = new Component(10, 10, 300, 10, "text", null);
+    paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
+    paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
+    paddles.push(new Component(10, 120, 10, 10, "vPaddle", "left"));
+    paddles.push(new Component(10, 120, 780, 10, "vPaddle", "right"));
   },
   clear : function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -70,7 +77,6 @@ function Component (width, height, x, y, type, position){
       this.x += this.speedX;
       this.y += this.speedY;
       this.speedY += .001;
-      console.log(this.y);
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     else if (this.type === "text"){
@@ -124,6 +130,7 @@ function Component (width, height, x, y, type, position){
           if(myArea.gameOver === false){
             myArea.gameOver = true;
             var winner = prompt("whoa, looks like you finished a game. Enter a name");
+            $("#playAgain").show();
             if(winner){
               var playerAndScore = new HighScore(winner, myArea.frameNo);
               scoresRef.push(playerAndScore);
@@ -145,6 +152,11 @@ function updateMyArea(){
     ball.update();
   });
 }
+var playAgain = function(){
+    $("#playAgain").hide();
+    myArea.frameNo = 0;
+    myArea.start();
+}
 
 var drawHighScores = function(){
   $("#highScores").empty();
@@ -157,9 +169,3 @@ var drawHighScores = function(){
 
 myArea.start();
 drawHighScores();
-ball = new Component(10, 10, 300, 10, "ball", null);
-boardScore = new Component(10, 10, 300, 10, "text", null);
-paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
-paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
-paddles.push(new Component(10, 120, 10, 10, "vPaddle", "left"));
-paddles.push(new Component(10, 120, 780, 10, "vPaddle", "right"));
