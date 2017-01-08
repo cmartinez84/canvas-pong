@@ -3,15 +3,20 @@ var score;
 var ball;
 var ping;
 
-
+var scoresRef = firebase.database().ref('scores');
+var highScores = function(playerName, highScore){
+  this.playerName = playerName;
+  this.highScore = highScore;
+}
 
 var myArea = {
   canvas : document.createElement("canvas"),
   start : function(){
     this.canvas.width = 800;
+    this.gameOver = false;
     this.canvas.height = 800;
     this.context = this.canvas.getContext('2d');
-    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    document.body.insertBefore(this.canvas, document.body.childNodes[2]);
     this.interval = setInterval(updateMyArea, 20);
     this.canvas.style.cursor = "none";
     window.addEventListener('mousemove', function(e){
@@ -19,7 +24,6 @@ var myArea = {
       myArea.y = e.clientY -(myArea.canvas.offsetTop - window.pageYOffset);
     });
     mySound = new Audio("sounds/ping.wav");
-
   },
   clear : function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -61,9 +65,10 @@ function Component (width, height, x, y, type, position){
     if(this.type === "ball"){
       this.x += this.speedX;
       this.y += this.speedY;
+      this.speedY += .001
+      console.log(this.y);
     }
     ctx.fillRect(this.x, this.y, this.width, this.height);
-
   },
   this.crashWith = function(otherObj){
     var myLeft = this.x;
@@ -103,12 +108,17 @@ function Component (width, height, x, y, type, position){
   this.outOfBounds = function(){
       if(this.x > 800 || this.x < 0  || this.y > 800 || this.y < 0){
         myArea.stop();
-          ctx.fillStyle = "white";
-          ctx.font = "50px Arial"
-          ctx.fillText(" G A M E O V E R", 200, 400);
+        ctx.fillStyle = "white";
+        ctx.font = "50px Arial";
+        ctx.fillText(" G A M E O V E R", 200, 400);
+        setTimeout(function(){
+          if(myArea.gameOver === false){
+            myArea.gameOver = true;
+            var person = prompt("whoa, looks like you finished a game. Enter a name");
+          }
+        }, 500);
       }
-  }
-}
+}}
 
 function updateMyArea(){
   myArea.clear();
@@ -117,7 +127,7 @@ function updateMyArea(){
     ball.crashWith(paddle);
     ball.outOfBounds();
     ball.update();
-  })
+  });
 }
 
 
