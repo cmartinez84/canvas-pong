@@ -6,3 +6,11 @@ canvas{
 body{
   text-align: center;
 }
+#highScores{
+    position: absolute;
+    top: 15%;
+    left: 5%;
+    z-index: -999;
+    font-size: 30px;
+    list-style: none;
+}

@@ -1,13 +1,15 @@
 var paddles = [];
-var score;
+var boardScore;
 var ball;
 var ping;
 
 var scoresRef = firebase.database().ref('scores');
-var highScores = function(playerName, highScore){
-  this.playerName = playerName;
-  this.highScore = highScore;
+function HighScore(person, finalScore){
+  this.person = person;
+  this.finalScore = finalScore;
 }
+
+
 
 var myArea = {
   canvas : document.createElement("canvas"),
@@ -15,6 +17,7 @@ var myArea = {
     this.canvas.width = 800;
     this.gameOver = false;
     this.canvas.height = 800;
+    this.frameNo = 0;
     this.context = this.canvas.getContext('2d');
     document.body.insertBefore(this.canvas, document.body.childNodes[2]);
     this.interval = setInterval(updateMyArea, 20);
@@ -37,7 +40,6 @@ var myArea = {
 
 
 function Component (width, height, x, y, type, position){
-
   this.width = width;
   this.height = height;
   this.x = x;
@@ -56,19 +58,26 @@ function Component (width, height, x, y, type, position){
       if(myArea.x >650){myArea.x = 650}
       if(myArea.x <30){myArea.x = 30}
       this.x = myArea.x;
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-    if(this.type === "vPaddle"){
+    else if(this.type === "vPaddle"){
       if(myArea.y > 650){myArea.y = 650}
       if(myArea.y < 30) {myArea.y = 30}
       this.y = myArea.y;
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-    if(this.type === "ball"){
+    else if(this.type === "ball"){
       this.x += this.speedX;
       this.y += this.speedY;
-      this.speedY += .001
+      this.speedY += .001;
       console.log(this.y);
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    else if (this.type === "text"){
+      ctx.fillStyle = "white";
+      ctx.font = "50px Arial";
+      ctx.fillText(myArea.frameNo, 600, 100);
+    }
   },
   this.crashWith = function(otherObj){
     var myLeft = this.x;
@@ -114,14 +123,20 @@ function Component (width, height, x, y, type, position){
         setTimeout(function(){
           if(myArea.gameOver === false){
             myArea.gameOver = true;
-            var person = prompt("whoa, looks like you finished a game. Enter a name");
+            var winner = prompt("whoa, looks like you finished a game. Enter a name");
+            if(winner){
+              var playerAndScore = new HighScore(winner, myArea.frameNo);
+              scoresRef.push(playerAndScore);              
+            }
           }
         }, 500);
       }
 }}
 
 function updateMyArea(){
+  myArea.frameNo ++;
   myArea.clear();
+  boardScore.update();
   paddles.forEach(function(paddle){
     paddle.update();
     ball.crashWith(paddle);
@@ -132,8 +147,8 @@ function updateMyArea(){
 
 
 myArea.start();
-ball = new Component(10, 10, 300, 10, "ball");
-
+ball = new Component(10, 10, 300, 10, "ball", null);
+boardScore = new Component(10, 10, 300, 10, "text", null);
 paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
 paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
 paddles.push(new Component(10, 120, 10, 10, "vPaddle", "left"));
