@@ -9,8 +9,6 @@ function HighScore(person, finalScore){
   this.finalScore = finalScore;
 }
 
-
-
 var myArea = {
   canvas : document.createElement("canvas"),
   start : function(){
