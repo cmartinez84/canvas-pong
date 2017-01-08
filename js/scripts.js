@@ -128,6 +128,7 @@ function Component (width, height, x, y, type, position){
               var playerAndScore = new HighScore(winner, myArea.frameNo);
               scoresRef.push(playerAndScore);
             }
+            drawHighScores();
           }
         }, 500);
       }
@@ -146,9 +147,10 @@ function updateMyArea(){
 }
 
 var drawHighScores = function(){
+  $("#highScores").empty();
     scoresRef.orderByChild('finalScore').limitToLast(5).on('value', function(snap){
         snap.forEach(function(e){
-            $("#highScores").prepend("<li><span>"+ e.val().finalScore +"</span>  "+ e.val().person +"</li>");
+            $("#highScores").prepend("<li><span>"+e.val().person +" "+ e.val().finalScore +"</span>");
         });
     });
 }

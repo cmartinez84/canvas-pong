@@ -7,6 +7,7 @@ body{
   text-align: center;
 }
 #highScores{
+  text-align: left;
     position: absolute;
     top: 15%;
     left: 5%;
