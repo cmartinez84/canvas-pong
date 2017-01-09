@@ -29,7 +29,17 @@ var myArea = {
     mySound = new Audio("sounds/ping.wav");
     var ballStartX =  200+Math.floor(Math.random() * 300);
     var ballStartY = 200+Math.floor(Math.random() * 300);
+
+    var ballSpeedsX = [1, -1];
+    var ballSpeedsY = [2, -2];
+    var randomSpeedX = Math.floor(Math.random() * 2);
+    var randomSpeedY = Math.floor(Math.random() * 2);
+    var ballSpeedX = ballSpeedsX[randomSpeedX];
+    var ballSpeedY = ballSpeedsY[randomSpeedY];
     ball = new Component(10, 10, ballStartX, ballStartY, "ball", null);
+    ball.speedX = 4;
+    ball.speedX = ballSpeedX;
+    ball.speedY = ballSpeedY;
     boardScore = new Component(10, 10, 300, 10, "text", null);
     paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
     paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
