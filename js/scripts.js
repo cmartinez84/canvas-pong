@@ -2,6 +2,7 @@ var paddles = [];
 var boardScore;
 var ball;
 var ping;
+var sparks = [];
 
 var scoresRef = firebase.database().ref('scores');
 function HighScore(person, finalScore){
@@ -26,12 +27,15 @@ var myArea = {
     });
     paddles = [];
     mySound = new Audio("sounds/ping.wav");
-    ball = new Component(10, 10, 300, 10, "ball", null);
+    var ballStartX =  200+Math.floor(Math.random() * 300);
+    var ballStartY = 200+Math.floor(Math.random() * 300);
+    ball = new Component(10, 10, ballStartX, ballStartY, "ball", null);
     boardScore = new Component(10, 10, 300, 10, "text", null);
     paddles.push(new Component(120, 10, 10, 780, "hPaddle", "bottom"));
     paddles.push(new Component(120, 10, 20, 10, "hPaddle", "top"));
     paddles.push(new Component(10, 120, 10, 10, "vPaddle", "left"));
     paddles.push(new Component(10, 120, 780, 10, "vPaddle", "right"));
+
   },
   clear : function(){
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -45,10 +49,10 @@ var myArea = {
 
 
 function Component (width, height, x, y, type, position){
-  this.width = width;
-  this.height = height;
   this.x = x;
   this.y = y;
+  this.width = width;
+  this.height = height;
   this.type = type;
   this.position = position;
   this.speedX = 1;
@@ -98,10 +102,12 @@ function Component (width, height, x, y, type, position){
         if(position === "bottom" && myBottom  > otherTop){
           mySound.play();
           this.speedY *= -1;
+          drawSparks(this.x, this. y, (this.speedX * -4), (this.speedY *4));
         }
         if(position === "top" && myTop < otherBottom){
           mySound.play();
           this.speedY *= -1;
+          drawSparks(this.x, this. y, (this.speedX * -4 ), this.speedY);
         }
       }
     }
@@ -110,10 +116,12 @@ function Component (width, height, x, y, type, position){
         if(position === "right" && myRight  > otherLeft){
                mySound.play();
           this.speedX *= -1;
+          drawSparks(this.x, this. y, (this.speedX *4), (this.speedY *4));
         }
         if(position === "left" && myLeft < otherRight){
           mySound.play();
           this.speedX *= -1;
+          drawSparks(this.x, this. y, (this.speedX *4), (this.speedY *4));
         }
       }
     }
@@ -127,7 +135,8 @@ function Component (width, height, x, y, type, position){
         setTimeout(function(){
           if(myArea.gameOver === false){
             myArea.gameOver = true;
-            var winner = prompt("whoa, looks like you finished a game. Enter a name");
+            // var winner = prompt("whoa, looks like you finished a game. Enter a name");
+            var winner;
             $("#playAgain").show();
             if(winner){
               var playerAndScore = new HighScore(winner, myArea.frameNo);
@@ -139,6 +148,27 @@ function Component (width, height, x, y, type, position){
       }
 }}
 
+function Spark (x, y, width, height, speedX, speedY){
+  this.width = width;
+  this.height = height;
+  this.x = x;
+  this.y = y;
+  this.speedX = speedX;
+  this.speedY = speedY;
+  this.gravity = 0.4;
+  this.gravitySpeed =0;
+  ctx = myArea.context;
+  // ctx.fillStyle = "green";
+  ctx.fillRect(this.x, this.y, this.width, this.height);
+  this.update = function(){
+    this.gravitySpeed += this.gravity;
+    this.x += this.speedX;
+    this.y += this.speedY + this.gravitySpeed;
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
 function updateMyArea(){
   myArea.frameNo ++;
   myArea.clear();
@@ -149,6 +179,12 @@ function updateMyArea(){
     ball.outOfBounds();
     ball.update();
   });
+
+  if(sparks.length >0){
+    sparks.forEach(function(spark){
+      spark.update();
+    });
+  }
 }
 var playAgain = function(){
     $("#playAgain").hide();
@@ -164,6 +200,30 @@ var drawHighScores = function(){
         });
     });
 }
+var randos = [];
+
+var drawSparks = function(x, y, speedX, speedY){
+  // if(speedY > 0){ speedY * 3};
+  randos[0] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[1] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[2] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[3] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[4] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[5] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[6] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[7] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[8] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[9] = 8-(Math.floor(Math.random() * 90))/10;
+  randos[10] = 8-(Math.floor(Math.random() * 90))/10;
+  randos.forEach(function(rando){
+    sparks.push(new Spark (x, y, 3, 3 , speedX + rando, speedY - ((rando*rando)/6)));
+    sparks.push(new Spark (x, y, 3, 3 , speedX - (rando/ (rando*rando)), speedY - ((rando)/6)));
+  });
+
+  // sparks.push(new Spark (x, y, 3, 3, speedX, speedY));
+}
+
+
 
 myArea.start();
 drawHighScores();
