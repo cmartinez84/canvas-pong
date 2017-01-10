@@ -145,7 +145,7 @@ function Component (width, height, x, y, type, position){
         setTimeout(function(){
           if(myArea.gameOver === false){
             myArea.gameOver = true;
-            // var winner = prompt("whoa, looks like you finished a game. Enter a name");
+            var winner = prompt("whoa, looks like you finished a game. Enter a name");
             var winner;
             $("#playAgain").show();
             if(winner){
